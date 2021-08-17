@@ -1,0 +1,263 @@
+---
+title: "Praktikum </br> Klimatologi Tropika"
+subtitle: "⛈️🌪🌧🌤 </br> </br> GFM324"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: [default, default-fonts]
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+
+---
+class: inverse
+background-image: url(ppt-figure/agung.png)
+background-size: 300px
+background-position: 90% 10%
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev = "svg")
+library(data.table)
+library(kableExtra)
+library(knitr)
+library(leaflet)
+library(reticulate)
+library(DT)
+load("dat.RData")
+```
+
+# Perkenalan Dulu ...
+
+### Agung Baruna Setiawan Noor
+> GFM - IPB 52 (Meteorologi Terapan) </br>
+> KLI - IPB 56 (Klimatologi Terapan)
+
+📱 083831280270 </br>
+✉️ agung_baruna@apps.ipb.ac.id
+
+```{r kosan, echo=FALSE, fig.height=4, fig.width=8, fig.align='left'}
+leaflet() %>% addTiles() %>%
+  addMarkers(lng = c(106.719737,112.789224), lat = c(-6.564120,-7.321461))
+```
+
+---
+class: inverse
+
+# Pengalaman 
+
+## 1. Asisten Praktikum - IPB
+- Fisika (FIS100) - 2017, 2018
+- Klimatologi Tropika - 2018, 2019, 2020, sekarang
+- Metode Klimatologi - 2018
+- Analisis Meteorologi & Klimatologi Terapan - 2019
+- Pemodelan Iklim - 2020, 2021
+
+--
+
+## 2. Pekerjaan
+- Staf Analis Klimatologi di PT Mohairson Pawan Khatulistiwa - Bogor
+
+
+
+---
+class: inverse, center, middle
+
+# GET READY ???
+
+--
+
+## Kalau lapar, makan dulu
+--
+
+## Yang ngantuk, boleh bobo 😄
+
+
+---
+
+# Kontrak Praktikum
+
+1. Jadwal praktikum pada pukul 08:00 - 10:30 WIB
+1. Bobot nilai praktikum mata kuliah: 15%
+2. Kehadiran wajib 100% 
+3. Hadir 10 menit sebelum jadwal praktikum
+4. Video wajah tidak perlu ditampilkan untuk menghemat kuota internet dan microphone dimatikan ketika asisten menjelaskan materi
+5. Penilaian praktikum: Kuis (*opsional*), laporan, dan ujian praktikum (*opsional*)
+6. Proporsi nilai praktikum: laporan = 60%, kuis = 20%, dan ujian praktikum = 20% 
+7. Pilihan bentuk laporan: 
+  - Mengunggah foto melalui Instagram 
+  - Dokumen (pdf)
+8. PJ GFM 56 Klimatologi Tropika: ....... (**NIM**)
+9. Tugas PJ: mengumpulkan laporan untuk 1 angkatan dalam bentuk file kompres 
+(zip/rar/tar/7z) kepada Asisten Praktikum sebelum pukul 16:00 WIB melalui e-mail
+
+Project based Learning ??
+
+### Kesepakatan kontrak praktikum antara mahasiswa dan asisten bisa diubah sampai 27 Agustus 2021
+
+---
+
+# Materi Praktikum
+
+```{r echo=FALSE}
+materi <- data.table(
+  `Pertemuan ke-` = seq(12),
+  Topik = c("Format Data Iklim dan Akses Data Iklim",
+            "Pengenalan R dan Python untuk Pengolahan Data Iklim",
+            "Dasar-Dasar Sintaks R/Python",
+            "Karakteristik Iklim Tropis",
+            "Analisis Data Iklim di Daerah Tropis",
+            "Pola ITCZ",
+            "Analisis Indeks Monsun",
+            "Analisis QBO",
+            "Analisis MJO",
+            "Analisis ENSO",
+            "Analisis IOD",
+            "Analisis PDO")
+)
+# Show topics
+kable(materi, format = 'html', align = "cc")
+```
+
+
+---
+class: inverse, middle, center
+
+# Format Data Iklim <br> dan <br> Akses Data Iklim
+
+
+---
+
+# Apa sajakah contohnya?
+
+.pull-left[
+### 1. Spreadsheet - xls, xlsx, csv, tsv
+### 2. Geo Raster - tif
+### 3. Gridded binary - GRIB, GRB2
+]
+
+.pull-right[
+### 4. Teks - txt, asc
+### 5. Gridded data - grd
+### 6. NetCDF - nc, nc4
+### 7. HDF - hdf, h5
+]
+
+## <p style="color:red"> Dan masih banyak lagi........ 
+
+
+---
+
+# Spreadsheet (*csv)
+
+Data tipe ini berisi teks-teks yang dipisah dengan koma (",") dan dapat menyimpan dalam ukuran besar, tidak seperti data yang berformat .xls atau .xlsx yang memiliki batasan hanya $2^{20} = 1.048.576$ baris dan $2^{14} = 16.384$ kolom.
+
+.pull-left[
+`R`:
+
+```{r}
+library(data.table)
+prc <- fread("Data/precip.csv")
+```
+```{r, echo=FALSE}
+kable(head(prc))
+```
+]
+
+.pull-right[
+`Python`:
+```{python}
+import pandas as pd
+prc = pd.read_csv("Data/precip.csv")
+```
+```{r, echo=FALSE}
+kable(head(py$prc))
+```
+]
+
+---
+
+# Spreadsheet (*csv)
+
+Sumber datanya: https://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/
+
+```{r, echo=FALSE}
+library(DT)
+datatable(prc, editable = TRUE, options=list(
+  initComplete = JS(
+        "function(settings, json) {",
+        "$(this.api().table().container()).css({'font-size': '70%'});",
+        "}")))
+```
+
+
+---
+
+# NetCDF (*nc)
+
+- NetCDF (ekstensi .nc) adalah seperangkat pustaka perangkat lunak dan *self-describing*. NetCDF dikembangkan dan dikelola oleh [Unidata](https://www.unidata.ucar.edu/about/tour/index.html). 
+- *Self-describing* artinya terdapat *header* yang mendeskripsikan tata letak file, khususnya data array, serta file metadata berbentuk atribut nama/nilai. 
+- NetCDF mendukung pembuatan, akses, dan berbagi data ilmiah berorientasi *array*. 
+- File NetCDF dapat langsung diolah secara *online* menggunakan *Open-source Project for a Network Data Access Protocol* (OPeNDAP). 
+
+
+---
+
+# NetCDF (*nc)
+
+`R`:
+
+```{r}
+library(metR)
+GlanceNetCDF("Data/uwnd.mon.mean.nc")
+```
+
+---
+
+# NetCDF (*nc)
+
+`Python`:
+
+```{python}
+import xarray as xr
+xr.open_dataset("Data/uwnd.mon.mean.nc")
+```
+
+
+---
+background-image: url(ppt-figure/awan.svg)
+background-size: 300px
+background-position: 90% 80%
+
+# Halaman Web Untuk Download Data Iklim (free)
+
+https://dataonline.bmkg.go.id
+
+https://cds.climate.copernicus.eu
+
+https://iridl.ldeo.columbia.edu
+
+https://apps.ecmwf.int
+
+https://www.ogimet.com
+
+https://worldclim.org
+
+https://ccafs-climate.org
+
+## Selebihnya bisa lihat di Instagram [@lokana.eye](https://instagram.com/lokana.eye)
+
+
+---
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/b/be/Sharingan_triple.svg)
+
+class: bottom, middle, inverse
+
+# Thank You:*
+
+
+Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+
+Additional packages come from [**knitr**](https://yihui.org/knitr/) and [R Markdown](https://rmarkdown.rstudio.com).
