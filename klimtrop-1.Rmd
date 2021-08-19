@@ -1,0 +1,243 @@
+---
+title: "Klimatologi Tropika"
+subtitle: "Praktikum Pertemuan Ke-1"
+date: "`r Sys.Date()`"
+widescreen: true
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev = "svg")
+library(data.table)
+library(kableExtra)
+library(knitr)
+library(leaflet)
+library(reticulate)
+
+load("dat.RData")
+```
+
+
+# Perkenalan Dulu ...
+
+## Agung Baruna Setiawan Noor (G251190136)
+
+- GFM - IPB 52 (Meteorologi Terapan)
+- KLI - IPB 56 (Klimatologi Terapan)
+
+📱  083831280270 </br>
+✉️ agung_baruna@apps.ipb.ac.id
+
+```{r kosan, echo=FALSE, fig.height=3, fig.width=5, fig.align='left'}
+leaflet() %>% addTiles() %>%
+  addMarkers(lng = c(106.719737,112.789224), lat = c(-6.564120,-7.321461))
+```
+
+
+
+## Pengalaman 
+
+1. Asisten Praktikum - IPB
+
+    - Fisika (FIS100) (2017 - 2018)
+    - Klimatologi Tropika (2018 - sekarang)
+    - Metode Klimatologi (2018)
+    - Analisis Meteorologi (2019)
+    - Klimatologi Terapan (2019)
+    - Pemodelan Iklim (2020 - 2021)
+
+2. Pekerjaan
+
+    - Staf Analis Klimatologi di PT Mohairson Pawan Khatulistiwa - Bogor (2020 - sekarang)
+
+
+## Salman Al-Farisi (G24170038)
+
+- GFM - IPB 54 (Meteorologi Terapan)
+
+📱  089509219357 </br>
+✉️ salmanfaris375@gmail.com
+
+```{r rumah, echo=FALSE, fig.height=3, fig.width=5, fig.align='left'}
+leaflet() %>% addTiles() %>%
+  addMarkers(lng = c(108.45347180013826), lat = c(-6.466325009572352))
+```
+
+
+## Pengalaman 
+
+1. Asisten Praktikum - IPB
+
+    - Metode Klimatologi (2020)
+
+2. Magang
+
+    - Badan Nasional Penanggulangan Bencana - Jakarta (2019)
+    - Badan Pengkajian dan Penerapan Teknologi - Jakarta (2021)
+
+
+3. Youth Leadership Camp for Climate Crisis - Banyuwangi (2020)
+
+
+# GET READY ???
+
+
+
+## Kontrak Praktikum {.smaller}
+
+1. Jadwal praktikum pada pukul 09:00 - 11:30 WIB
+2. Bobot nilai praktikum mata kuliah: 10%
+3. Kehadiran wajib 100% 
+4. Video wajah tidak perlu ditampilkan untuk menghemat kuota internet dan microphone dimatikan ketika asisten menjelaskan materi
+5. Nilai praktikum diperoleh dari tugas-tugas yang diberikan atau kuis oleh Asisten
+6. Bentuk tugas: Mengunggah foto hasil analisis dan visualisasi data melalui Instagram 
+7. PJ GFM 56 Klimatologi Tropika: ....... (**NIM**)
+8. Kelompok praktikum mengikuti kelompok Projek Mata Kuliah
+
+
+## Pembagian Kelompok
+
+```{r, echo=FALSE}
+kelompok <- data.table(Kelompok = seq(1, 10), Nama = rep("Insert your name here", 80))
+```
+```{r, echo=FALSE}
+library(DT)
+datatable(kelompok, extensions = "Buttons", editable = TRUE, rownames = FALSE,
+              options = list(dom = 'Blfrtip', 
+                             initComplete = JS(
+                               "function(settings, json) {",
+                               "$(this.api().table().container()).css({'font-size': '70%'});",
+                               "}"),
+                             buttons = c('copy', 'excel', 'pdf'),
+                             lengthMenu = list(c(5,25,50,-1),
+                                               c(5,25,50,"All"))))
+```
+
+## Materi Praktikum
+
+```{r echo=FALSE}
+materi <- data.table(
+  Topik = c("Format Data Iklim dan Akses Data Iklim",
+            "Pengenalan R untuk Pengolahan Data Iklim",
+            "Membuat Aplikasi Berbasis Web dengan RStudio",
+            "Karakteristik Iklim Tropis",
+            "Analisis Data Iklim di Daerah Tropis",
+            "Pola ITCZ",
+            "Analisis Indeks Monsun",
+            "Analisis QBO",
+            "Analisis MJO",
+            "Analisis ENSO",
+            "Analisis IOD",
+            "Analisis PDO")
+)
+# Show topics
+datatable(materi, options = list(lengthMenu = list(c(8,-1), c(8,"All")),
+                                 initComplete = JS(
+                                   "function(settings, json) {",
+                                   "$(this.api().table().container()).css({'font-size': '70%'});",
+                                   "}")))
+```
+
+
+# Format Data Iklim <br> dan <br> Akses Data Iklim
+
+
+
+## Apa sajakah contohnya? {.columns-2}
+
+- Spreadsheet - xls, xlsx, csv, tsv
+- Geo Raster - tif
+- Gridded binary - GRIB, GRB2
+- Teks - txt, asc
+- Gridded data - grd
+- NetCDF - nc, nc4
+- Hierarchical Data Format - hdf, h5
+
+<p class="forceBreak"></p>
+
+Dan masih banyak lagi........ 
+
+
+## Spreadsheet (*csv)
+
+Data tipe ini berisi teks-teks yang dipisah dengan koma (",") dan dapat menyimpan dalam ukuran besar, tidak seperti data yang berformat .xls atau .xlsx yang memiliki batasan hanya $2^{20} = 1.048.576$ baris dan $2^{14} = 16.384$ kolom.
+
+
+```{r}
+library(data.table)
+prc <- fread("Data/precip.csv")
+```
+
+
+## Spreadsheet (*csv)
+
+Data lengkapnya ....
+
+Sumber data: https://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/
+
+```{r, echo=FALSE}
+datatable(prc, extensions = "Buttons", editable = FALSE, rownames = FALSE,
+              options = list(dom = 'Blfrtip', 
+                             initComplete = JS(
+                               "function(settings, json) {",
+                               "$(this.api().table().container()).css({'font-size': '70%'});",
+                               "}"),
+                             buttons = c('copy', 'excel', 'pdf'),
+                             lengthMenu = list(c(5,25,50,-1),
+                                               c(5,25,50,"All"))))
+```
+
+
+## NetCDF (*nc)
+
+- NetCDF (ekstensi .nc) adalah seperangkat pustaka perangkat lunak dan *self-describing*. NetCDF dikembangkan dan dikelola oleh [Unidata](https://www.unidata.ucar.edu/about/tour/index.html). 
+- *Self-describing* artinya terdapat *header* yang mendeskripsikan tata letak file, khususnya data array, serta file metadata berbentuk atribut nama/nilai. 
+- NetCDF mendukung pembuatan, akses, dan berbagi data ilmiah berorientasi *array*. 
+- File NetCDF dapat langsung diolah secara *online* menggunakan *Open-source Project for a Network Data Access Protocol* (OPeNDAP). 
+
+
+## NetCDF (*nc)
+
+```{r}
+library(metR)
+GlanceNetCDF("Data/uwnd.mon.mean.nc")
+```
+
+
+
+## Gridded Binary (*GRIB, GRB2)
+
+- Format data standar internasional oleh WMO untuk menyimpan data grid 
+- Biasa digunakan dalam meteorologi untuk meyimpan dan bertukar data historis dan prakiraan cuaca
+- Contoh: ERA5, Global Forecast System (GFS), Climate Forecast System (CFS)
+
+
+## Hierarchical Data Format - hdf, h5
+
+- Format file data yang dibuat oleh National Center for Supercomputing Application (NCSA) untuk menyimpan dan memanipulasi data-data saintifik
+- HDF dibuat dengan bahasa pemrograman C dan Fortran, dan tersedia API untuk bahasa pemrograman lain seperti R, Python, dan Shell
+- Struktur data: array, tabel, teks, citra raster, color palette 
+- Contoh: produk satelit MODIS 
+
+
+
+## Contoh Halaman Web Untuk Download Data Iklim
+
+https://dataonline.bmkg.go.id
+
+https://cds.climate.copernicus.eu
+
+https://iridl.ldeo.columbia.edu
+
+https://apps.ecmwf.int
+
+https://www.ogimet.com
+
+https://worldclim.org
+
+https://ccafs-climate.org
+
+Selebihnya bisa lihat di Instagram [lokana.eye](https://instagram.com/lokana.eye)
+
+
+# Thank You :*
